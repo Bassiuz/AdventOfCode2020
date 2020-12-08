@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { parse } = require('path');
+const timer = require("./../timer/timer.js");
 
 const commands = [];
 const bootSequence = [];
@@ -21,10 +22,11 @@ fs.readFile('day8/input.txt', (err, data) => {
     resetExecutions();
     bootSequenceInitiated = true;
 
+    const start = timer.startTimer();
+
     while (!exitedCode && bootSequence[j]) {
         acc = 0;
         if (bootSequence[j].type != "acc") {
-            console.log("retry command: " + bootSequence[j].commandString);
             exitedCode = executeCommands(commands[0], bootSequence[j]);
             resetExecutions();
         }
@@ -32,6 +34,8 @@ fs.readFile('day8/input.txt', (err, data) => {
     }
 
     console.log("Acc value: " + acc);
+
+    console.log(`Time since start: ${timer.endTimer(start)} ms`);
 })
 
 function resetExecutions() {
@@ -49,12 +53,9 @@ function executeCommands(currentCommand, retryCommand) {
     var type = currentCommand.type;
 
     if (retryCommand && currentCommand.line == retryCommand.line) {
-        console.log("found retry command");
         if (type == "nop") {
-            console.log("set to jmp");
             type = "jmp"
         } else if (type == "jmp") {
-            console.log("set to nop");
             type = "nop"
         }
     }
@@ -73,17 +74,14 @@ function executeCommands(currentCommand, retryCommand) {
     if (!nextCommand) {
         // boot sequence reached end of program
         if (nextIndex < 0) {
-            console.log("next index on top of file: " + nextIndex);
             // exited on top instead of end of file.
             return false;
         }
 
-        console.log("next index on bottom of file: " + nextIndex);
         return true;
     }
 
     if (nextCommand.executed) {
-        console.log("next command already executed: ", nextCommand.commandString);
         return false;
     } else {
         currentCommand.executed = true;

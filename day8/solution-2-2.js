@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { parse } = require('path');
+const timer = require("./../timer/timer.js");
 
 const commands = [];
 const bootSequence = [];
@@ -30,7 +31,7 @@ fs.readFile('day8/input.txt', (err, data) => {
     }
 
     console.log("Acc value: " + acc);*/
-
+    const start = timer.startTimer();
 
     acc = 0;
     for (var i = 0; i < findNodesThatLeadToEndOfFile().length; i++) {
@@ -46,6 +47,7 @@ fs.readFile('day8/input.txt', (err, data) => {
 
     executeCommands(commands[0]);
     console.log("Acc value: " + acc);
+    console.log(`Time since start: ${timer.endTimer(start)} ms`);
 
 })
 
