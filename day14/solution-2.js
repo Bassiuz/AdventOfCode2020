@@ -5,7 +5,8 @@ fs.readFile("day14/input.txt", (err, data) => {
     if (err) throw err;
     commands = data.toString().split("\n");
 
-    var memory = [];
+    var memory = {};
+    var total = 0;
     var currentBitmask;
 
     commands.forEach((command) => {
@@ -18,29 +19,26 @@ fs.readFile("day14/input.txt", (err, data) => {
             memoryAddress = command.split(" = ")[0].split("[")[1].replace("]", "");
 
             var binaryStringOfMemoryAddress = toBinaryString(memoryAddress);
-            var binaryStringOfNumber = toBinaryString(number);
             var allAddresses = generateAllNumbersWithBitmask(applyBitmaskToBinaryStringForMemoryAddress(
                 binaryStringOfMemoryAddress,
                 currentBitmask
             ));
 
             allAddresses.forEach(address => {
-                memory[toNumber(address)] = applyBitmaskToBinaryString(binaryStringOfNumber, currentBitmask);
+                if (memory[toNumber(address)]) {
+                    total = total - parseInt(memory[toNumber(address)]);
+
+                }
+                memory[toNumber(address)] = number;
+                total = total + parseInt(number);
             })
 
         }
     });
 
 
-    var total = 0;
-    memory.forEach((memoryItem) => {
-        console.log(memoryItem);
-        var value = toNumber(memoryItem);
-        console.log(value);
-        if (value) {
-            total = total + value;
-        }
-    });
+
+    console.log(total);
 
     function generateAllNumbersWithBitmask(currentNumberWithBitmaskApplied) {
         if (!currentNumberWithBitmaskApplied[0].includes("X")) {
